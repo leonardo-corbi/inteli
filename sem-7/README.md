@@ -367,8 +367,6 @@ Implemente a lógica dessa simulação em pseudocódigo, considerando a seguinte
 
 Considere a fórumla de atualização velocidade:
 
-**Resposta:**
-
 ```
     velocidade = velocidadeInicial - desaceleracao * tempo
 ```
@@ -399,8 +397,6 @@ Função SimularPouso(velocidadeInicial, desaceleracao, velocidadeSegura, tempoM
 **10)** Em um sistema de análise financeira, as operações de investimento de uma empresa podem ser representadas por matrizes, onde cada linha representa um tipo de investimento e cada coluna representa um período de tempo.
 
 A seguir, é fornecida a implementação da função SomarMatrizesInvestimento(matrizA, matrizB), que soma os valores de duas matrizes de investimento. Sua tarefa é implementar uma função semelhante, porém que realize a multiplicação das matrizes de investimento, determinando como os investimentos afetam os resultados ao longo do tempo.
-
-**Resposta:**
 
 ```
 Função SomarMatrizesInvestimento(matrizA, matrizB):
