@@ -1,11 +1,30 @@
-// Solicita o valor da compra ao usuário
-let valorCompra = 30.0;
+var energiaDisponivel = 1200;
+var bateriaExtra = 400;
+var consumoDispositivos = [300, 600, 500, 200, 400];
 
-// Verifica a categoria do frete com base no valor
-if (valorCompra < 50) {
-  console.log("Frete não disponível!");
-} else if (valorCompra <= 199.99) {
-  console.log("Frete com custo adicional!");
-} else {
-  console.log("Frete grátis!");
+for (var i = 0; i < consumoDispositivos.length; i++) {
+  var consumo = consumoDispositivos[i];
+
+  if (consumo <= energiaDisponivel) {
+    console.log(
+      "Dispositivo " +
+        (i + 1) +
+        " ligado. Energia restante: " +
+        (energiaDisponivel - consumo)
+    );
+    energiaDisponivel -= consumo;
+  } else if (consumo <= energiaDisponivel + bateriaExtra) {
+    console.log(
+      "Dispositivo " +
+        (i + 1) +
+        " ligado com bateria extra. Energia restante: " +
+        (energiaDisponivel + bateriaExtra - consumo)
+    );
+    energiaDisponivel = 0;
+    bateriaExtra -= consumo - energiaDisponivel;
+  } else {
+    console.log(
+      "Dispositivo " + (i + 1) + " não pode ser ligado. Energia insuficiente."
+    );
+  }
 }
