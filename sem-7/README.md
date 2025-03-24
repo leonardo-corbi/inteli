@@ -42,8 +42,7 @@ console.log("O produto dos valores é:", produto);
 
 Qual das seguintes alternativas melhor descreve o que o código faz?
 
-x) O código avalia a expressão booleana, imprime `true`, calcula o produto dos números na lista e imprime o resultado no console.
-Justificativa: (10 % 3 === 1 && 6 * 2 > 10) || 3 + 6 < 10 é true. Produto de [3, 6, 9, 12, 15] é 29160.
+A) O código avalia a expressão booleana, imprime `true`, calcula o produto dos números na lista e imprime o resultado no console.
 
 B) O código avalia a expressão booleana, imprime `false`, calcula o produto dos números na lista e imprime o resultado no console.
 
@@ -109,8 +108,7 @@ function analisarCredito2() {
 
 Se ambas as funções forem executadas com os valores fornecidos, qual será a saída exibida no console?
 
-x) Ambas as funções exibirão: 'Seu crédito foi aprovado. Saldo disponível: 400.'
-Justificativa: analisarCredito1() soma 2500 + 1200 + 800 = 4500 (para em i = 3). Saldo = 5000 - 4500 = 400. analisarCredito2() soma 2500 + 1200 + 800 = 4500. Saldo = 400. Ambas aprovam.
+A) Ambas as funções exibirão: 'Seu crédito foi aprovado. Saldo disponível: 400.'
 
 B) analisarCredito1() exibirá: 'Seu crédito foi negado. Saldo disponível: -600.', enquanto analisarCredito2() exibirá: 'Seu crédito foi negado. Saldo disponível: -200.'
 
@@ -139,8 +137,7 @@ Qual das seguintes alternativas melhor descreve o comportamento do código?
 
 A) O código verifica se a idade indica um adulto ou um idoso e exibe a mensagem correspondente.
 
-x) O código verifica se a idade pertence à faixa adulta. Se for, exibe "Você é um adulto!". Caso contrário, verifica se é menor de idade e exibe "Você é menor de idade!". Se nenhuma das condições anteriores for verdadeira, exibe "Você está na melhor idade!".
-Justifica: A alternativa explica exatamente o fluxo do código, de acordo com as verificações.
+B) O código verifica se a idade pertence à faixa adulta. Se for, exibe "Você é um adulto!". Caso contrário, verifica se é menor de idade e exibe "Você é menor de idade!". Se nenhuma das condições anteriores for verdadeira, exibe "Você está na melhor idade!".
 
 C) O código verifica se a idade está entre 18 e 60 anos e, se for, imprime "Você é um adulto!". Se não estiver nesse intervalo, imprime "Você está na melhor idade!".
 
@@ -217,7 +214,7 @@ Dispositivo 3 ligado. Energia restante: 400
 
 Dispositivo 4 não pode ser ligado. Energia insuficiente.
 
-x)
+D)
 Dispositivo 1 ligado. Energia restante: 900
 
 Dispositivo 2 ligado. Energia restante: 300
@@ -227,7 +224,6 @@ Dispositivo 3 ligado com bateria extra. Energia restante: 200
 Dispositivo 4 não pode ser ligado. Energia insuficiente.
 
 Dispositivo 5 não pode ser ligado. Energia insuficiente.
-Justificativa: 300 usa energia (900), 600 usa energia (300), 500 usa bateria (200), 200 e 400 não ligam.
 
 ---
 
@@ -237,8 +233,7 @@ Escolha a opção que melhor descreve seu propósito:
 
 A) O método update() é responsável por carregar os assets do jogo antes da cena ser exibida.
 
-x) O método update() é chamado continuamente a cada quadro (frame) do jogo, sendo usado para atualizar a lógica, movimentação e interações dos objetos na cena.
-Justificativa: update() roda a cada frame para atualizar a lógica do jogo.
+B) O método update() é chamado continuamente a cada quadro (frame) do jogo, sendo usado para atualizar a lógica, movimentação e interações dos objetos na cena.
 
 C) O método update() renderiza todos os sprites na tela e garante que a física do jogo seja processada corretamente.
 
@@ -250,8 +245,7 @@ D) O método update() é chamado apenas uma vez após a criação da cena, sendo
 
 Escolha a opção que responde corretamente:
 
-x) Simular física avançada, incluindo corpos rígidos, colisões complexas e interação entre objetos com gravidade e forças.
-Justificativa: Matter.js é um motor de física 2D que simula colisões, gravidade e forças em Phaser.js.
+A) Simular física avançada, incluindo corpos rígidos, colisões complexas e interação entre objetos com gravidade e forças.
 
 B) Gerenciar eventos de entrada do usuário, como cliques e toques na tela, permitindo movimentação de personagens.
 
@@ -276,38 +270,6 @@ Pedidos de R$200,00 ou mais → "Frete grátis!"
 
 Implemente um pseudocódigo que receba o valor total da compra e exiba a classificação correta do frete para o cliente.
 
-Início
-
-  Escreva("Digite o valor total da compra: ")
-  Leia valor_compra
-
-  Se valor_compra < 50 então
-    Escreva("Frete não disponível!")
-  
-  Senão se valor_compra >= 50 E valor_compra <= 199.99 então
-    Escreva("Frete com custo adicional!")
-  
-  Senão
-    Escreva("Frete grátis!")
-  
-Fim
-
----
-
-// Solicita o valor da compra ao usuário
-let valorCompra = 30.0;
-
-// Verifica a categoria do frete com base no valor
-if (valorCompra < 50) {
-  console.log("Frete não disponível!");
-} else if (valorCompra <= 199.99) {
-  console.log("Frete com custo adicional!");
-} else {
-  console.log("Frete grátis!");
-}
-
-
-
 ---
 
 **8)** Considere a implementação da classe base Veiculo em um sistema de modelagem de veículos. Sua tarefa é implementar, utilizando pseudocódigo, as classes derivadas Carro e Moto, que herdam da classe Veiculo, adicionando atributos específicos e métodos para calcular o consumo de combustível de um carro e de uma moto, respectivamente.
@@ -326,44 +288,6 @@ Método CalcularConsumo():
 
 Implementação genérica para cálculo de consumo, a ser sobrescrita pelas subclasses.
 Agora, implemente as classes Carro e Moto, garantindo que ambas herdem de Veiculo e possuam métodos específicos para calcular o consumo de combustível com base na quilometragem e eficiência do veículo.
-
-
-Classe Veiculo:
-    Atributos:
-        modelo
-        ano
-
-    Método Construtor(modelo, ano):
-        self.modelo ← modelo
-        self.ano ← ano
-
-    Método CalcularConsumo():
-        Escreva("Método genérico. Deve ser sobrescrito pelas subclasses.")
-
-Classe Carro herda de Veiculo:
-    Atributos:
-        eficiencia  // km por litro
-
-    Método Construtor(modelo, ano, eficiencia):
-        Chamar Construtor da Superclasse(modelo, ano)
-        self.eficiencia ← eficiencia
-
-    Método CalcularConsumo(quilometragem):
-        consumo ← quilometragem / self.eficiencia
-        Retorne consumo
-
-Classe Moto herda de Veiculo:
-    Atributos:
-        eficiencia  // km por litro
-
-    Método Construtor(modelo, ano, eficiencia):
-        Chamar Construtor da Superclasse(modelo, ano)
-        self.eficiencia ← eficiencia
-
-    Método CalcularConsumo(quilometragem):
-        consumo ← quilometragem / self.eficiencia
-        Retorne consumo
-
 
 ---
 
