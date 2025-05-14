@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>CRUD de Alunos</title>
+    </head>
+    <body>
+        <h1>Cadastro de Alunos</h1>
+
+        <form action="/alunos" method="POST"></form>
+            <input name="nome" placeholder="Nome" required />
+            <input name="email" placeholder="Email" required />
+
+            <!-- Seleção de curso -->
+            <select name="curso_id"></select>
+                <option value="">Selecione um curso</option>
+                <% cursos.forEach(curso => { %>
+                <option value="<%= curso.id %>"><%= curso.nome %></option>
+                <% }) %>
+            </select>
+
+            <button type="submit">Adicionar</button>
+        </form>
+
+        <!-- Formulário adicional para cadastrar novos cursos -->
+        <h2>Cadastrar novo curso</h2>
+        <form action="/cursos" method="POST">
+            <input name="nome" placeholder="Nome do curso" required />
+            <button type="submit">Adicionar Curso</button>
+        </form>
+
+        <!-- Loop para listar todos os cursos e permitir edição -->
+        <h2>Editar cursos</h2>
+        <% cursos.forEach(curso => { %>
+            <form action="/cursos/edit/<%= curso.id %>" method="POST" style="display:inline;">
+                <input name="nome" value="<%= curso.nome %>" required>
+                <button type="submit">✏️</button>
+            </form>
+            <!-- Formulário para deletar um curso -->
+            <form action="/cursos/delete/<%= curso.id %>" method="POST" style="display:inline;">
+                <button type="submit" onclick="return confirm('Tem certeza que deseja excluir?')">🗑️</button>
+            </form>
+        <% }) %>
+
+        <hr />
+
+        <ul>
+            <% alunos.forEach(aluno => { %>
+            <li>
+                <%= aluno.nome %> - <%= aluno.email %>
+                <form
+                    action="/alunos/edit/<%= aluno.id %>"
+                    method="POST"
+                    style="display: inline"
+                >
+                    <input name="nome" placeholder="Novo nome" required />
+                    <input name="email" placeholder="Novo email" required />
+                    <button type="submit">Editar</button>
+                </form>
+                <form
+                    action="/alunos/delete/<%= aluno.id %>"
+                    method="POST"
+                    style="display: inline"
+                >
+                    <button type="submit">Apagar</button>
+                </form>
+            </li>
+            <% }) %>
+        </ul>
+    </body>
+</html>

@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const home = require("../controllers/homeController");
-const about = require("../controllers/aboutController");
-const contact = require("../controllers/contactController");
+const home = require("../controllers/homeController.js");
+const about = require("../controllers/aboutController.js");
+const contact = require("../controllers/contactController.js");
 
 // Rota principal
 router.get("/", home.index);
