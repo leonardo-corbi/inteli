@@ -1,0 +1,8 @@
+Nome: Leonardo Cesar Corbi
+
+Pergunta:
+- Explique com suas palavras o funcionamento do models, controller e fale sobre endpoints no projeto 
+    
+    1. Model: o model é a parte que cuida dos dados. Ele diz o que uma tabela deve receber. Por exemplo, se estamos falando de um usuário, o model define que todo usuário vai ter um nome, um e-mail e uma senha. Ele também se conecta com o banco de dados, ou seja, é o model que guarda as informações no database.
+    2. Controller: O controller é quem decide o que fazer quando alguém usa o sistema. Ele recebe os dados que chegam (como nome, e-mail de um novo usuário), conversa com o model para salvar ou buscar informações e depois envia uma resposta. Por exemplo, se alguém quiser se cadastrar, o controller recebe os dados, pede pro model salvar no banco e responde se deu certo ou não.
+    3. Endpoint: O endpoint é o endereço que usamos para acessar uma lógica do sistema. É como um caminho na internet, tipo /usuarios, que usamos para mandar ou pegar informações. Cada endpoint tem uma função: um para criar um usuário, outro para listar, outro para apagar, e assim por diante. Quando acessamos um endpoint, ele chama o controller certo para fazer o que for necessário.
