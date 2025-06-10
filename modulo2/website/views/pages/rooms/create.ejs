@@ -1,0 +1,196 @@
+<div class="fade-in">
+    <div class="row">
+        <div class="col-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i data-lucide="building" style="width: 20px; height: 20px; margin-right: 0.5rem; display: inline;"></i>
+                        Cadastrar Nova Sala
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="/rooms">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="nome">Nome da Sala *</label>
+                                    <input type="text" id="nome" name="nome" class="form-control" 
+                                           placeholder="Ex: Sala de Reunião A" 
+                                           value="<%= typeof formData !== 'undefined' ? formData.nome || '' : '' %>" 
+                                           required>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="localizacao">Localização *</label>
+                                    <input type="text" id="localizacao" name="localizacao" class="form-control" 
+                                           placeholder="Ex: Andar 1 - Ala Norte" 
+                                           value="<%= typeof formData !== 'undefined' ? formData.localizacao || '' : '' %>" 
+                                           required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="capacidade">Capacidade *</label>
+                            <input type="number" id="capacidade" name="capacidade" class="form-control" 
+                                   placeholder="Número de pessoas" min="1" max="200"
+                                   value="<%= typeof formData !== 'undefined' ? formData.capacidade || '' : '' %>" 
+                                   required>
+                            <small style="color: var(--gray-500); font-size: 0.8rem;">Número máximo de pessoas que a sala comporta</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="recursos">Recursos Disponíveis</label>
+                            <textarea id="recursos" name="recursos" class="form-control form-textarea" 
+                                      placeholder="Ex: Projetor, TV 55&quot;, Ar condicionado, Quadro branco, Sistema de som..."
+                                      rows="4"><%= typeof formData !== 'undefined' ? formData.recursos || '' : '' %></textarea>
+                            <small style="color: var(--gray-500); font-size: 0.8rem;">Descreva os equipamentos e recursos disponíveis na sala</small>
+                        </div>
+                        
+                        <div class="d-flex gap-3 mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i data-lucide="save" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+                                Salvar Sala
+                            </button>
+                            <a href="/rooms" class="btn btn-secondary">
+                                <i data-lucide="arrow-left" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+                                Voltar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i data-lucide="info" style="width: 20px; height: 20px; margin-right: 0.5rem; display: inline;"></i>
+                        Dicas
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div style="margin-bottom: 1.5rem;">
+                        <h5 style="color: var(--primary-blue); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">
+                            <i data-lucide="lightbulb" style="width: 14px; height: 14px; margin-right: 0.25rem; display: inline;"></i>
+                            Nome da Sala
+                        </h5>
+                        <p style="font-size: 0.8rem; color: var(--gray-600); margin: 0;">
+                            Use nomes descritivos e únicos. Ex: "Sala de Reunião A", "Auditório Principal", "Sala Executiva".
+                        </p>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <h5 style="color: var(--primary-blue); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">
+                            <i data-lucide="map-pin" style="width: 14px; height: 14px; margin-right: 0.25rem; display: inline;"></i>
+                            Localização
+                        </h5>
+                        <p style="font-size: 0.8rem; color: var(--gray-600); margin: 0;">
+                            Seja específico sobre a localização. Inclua andar, ala ou setor para facilitar a localização.
+                        </p>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <h5 style="color: var(--primary-blue); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">
+                            <i data-lucide="users" style="width: 14px; height: 14px; margin-right: 0.25rem; display: inline;"></i>
+                            Capacidade
+                        </h5>
+                        <p style="font-size: 0.8rem; color: var(--gray-600); margin: 0;">
+                            Considere a capacidade máxima confortável, não apenas o número de cadeiras disponíveis.
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <h5 style="color: var(--primary-blue); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">
+                            <i data-lucide="monitor" style="width: 14px; height: 14px; margin-right: 0.25rem; display: inline;"></i>
+                            Recursos
+                        </h5>
+                        <p style="font-size: 0.8rem; color: var(--gray-600); margin: 0;">
+                            Liste todos os equipamentos disponíveis. Isso ajuda na escolha da sala ideal para cada tipo de reunião.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i data-lucide="list" style="width: 20px; height: 20px; margin-right: 0.5rem; display: inline;"></i>
+                        Recursos Comuns
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                        <span class="badge badge-info" style="cursor: pointer;" onclick="addResource('Projetor')">Projetor</span>
+                        <span class="badge badge-info" style="cursor: pointer;" onclick="addResource('TV 55&quot;')">TV 55"</span>
+                        <span class="badge badge-info" style="cursor: pointer;" onclick="addResource('Ar condicionado')">Ar condicionado</span>
+                        <span class="badge badge-info" style="cursor: pointer;" onclick="addResource('Quadro branco')">Quadro branco</span>
+                        <span class="badge badge-info" style="cursor: pointer;" onclick="addResource('Sistema de som')">Sistema de som</span>
+                        <span class="badge badge-info" style="cursor: pointer;" onclick="addResource('Microfones')">Microfones</span>
+                        <span class="badge badge-info" style="cursor: pointer;" onclick="addResource('Computador')">Computador</span>
+                        <span class="badge badge-info" style="cursor: pointer;" onclick="addResource('Webcam')">Webcam</span>
+                        <span class="badge badge-info" style="cursor: pointer;" onclick="addResource('Mesa de reunião')">Mesa de reunião</span>
+                        <span class="badge badge-info" style="cursor: pointer;" onclick="addResource('Flipchart')">Flipchart</span>
+                    </div>
+                    <small style="color: var(--gray-500); font-size: 0.75rem; margin-top: 0.5rem; display: block;">
+                        Clique nos recursos para adicioná-los automaticamente
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function addResource(resource) {
+        const textarea = document.getElementById('recursos');
+        const currentValue = textarea.value.trim();
+        
+        if (currentValue === '') {
+            textarea.value = resource;
+        } else if (!currentValue.includes(resource)) {
+            textarea.value = currentValue + ', ' + resource;
+        }
+        
+        textarea.focus();
+    }
+    
+    // Validação do formulário
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        
+        form.addEventListener('submit', function(e) {
+            const hideLoading = showButtonLoading(submitBtn);
+            
+            // Se houver erro, restaurar botão
+            setTimeout(() => {
+                if (document.querySelector('.alert-danger')) {
+                    hideLoading();
+                }
+            }, 100);
+        });
+        
+        // Validação em tempo real
+        const nomeInput = document.getElementById('nome');
+        const localizacaoInput = document.getElementById('localizacao');
+        const capacidadeInput = document.getElementById('capacidade');
+        
+        function validateForm() {
+            const isValid = nomeInput.value.trim() !== '' && 
+                           localizacaoInput.value.trim() !== '' && 
+                           capacidadeInput.value > 0;
+            
+            submitBtn.disabled = !isValid;
+        }
+        
+        [nomeInput, localizacaoInput, capacidadeInput].forEach(input => {
+            input.addEventListener('input', validateForm);
+        });
+        
+        validateForm();
+    });
+</script>
+

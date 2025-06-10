@@ -1,29 +1,274 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= pageTitle %></title>  
-  <style>
-    <%- include('../css/style.css'); %>
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'Reserva de Salas' %></title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- CSS Principal -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <!-- Meta tags -->
+    <meta name="description" content="Sistema de Reserva de Salas - Gerencie reservas de salas de forma eficiente">
+    <meta name="keywords" content="reserva, salas, agendamento, gestão">
+    <meta name="author" content="Sistema Reserva de Salas">
 </head>
 <body>
-  <!-- Inclui o cabeçalho como um partial -->
-  <%- include('../components/header') %>
-
-  <main>
-    <!-- Renderiza o conteúdo da página específica -->
-    <%- include(content) %>
-  </main>
-
-  <footer>
-    <!-- Rodapé comum aqui -->
-    <p>Rodapé da Aplicação</p>
-  </footer>
-
-  <!-- Adicione scripts JS se necessário -->
-  <script src="/js/script.js"></script>
-  
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1>
+                    <i data-lucide="calendar-check" class="nav-icon" style="display: inline; margin-right: 0.5rem;"></i>
+                    Reserva de Salas
+                </h1>
+                <p>Sistema de Gerenciamento</p>
+            </div>
+            
+            <div class="sidebar-nav">
+                <div class="nav-item">
+                    <a href="/" class="nav-link <%= currentPage === 'dashboard' ? 'active' : '' %>">
+                        <i data-lucide="layout-dashboard" class="nav-icon"></i>
+                        Dashboard
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="/rooms" class="nav-link <%= currentPage === 'rooms' ? 'active' : '' %>">
+                        <i data-lucide="building" class="nav-icon"></i>
+                        Salas
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="/reservations" class="nav-link <%= currentPage === 'reservations' ? 'active' : '' %>">
+                        <i data-lucide="calendar" class="nav-icon"></i>
+                        Reservas
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="/reservations/calendar" class="nav-link <%= currentPage === 'calendar' ? 'active' : '' %>">
+                        <i data-lucide="calendar-days" class="nav-icon"></i>
+                        Calendário
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="/users" class="nav-link <%= currentPage === 'users' ? 'active' : '' %>">
+                        <i data-lucide="users" class="nav-icon"></i>
+                        Usuários
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="/logs" class="nav-link <%= currentPage === 'logs' ? 'active' : '' %>">
+                        <i data-lucide="file-text" class="nav-icon"></i>
+                        Logs
+                    </a>
+                </div>
+                
+                <div class="nav-item" style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                    <a href="/rooms/availability" class="nav-link">
+                        <i data-lucide="search" class="nav-icon"></i>
+                        Disponibilidade
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="/help" class="nav-link <%= currentPage === 'help' ? 'active' : '' %>">
+                        <i data-lucide="help-circle" class="nav-icon"></i>
+                        Ajuda
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="/about" class="nav-link <%= currentPage === 'about' ? 'active' : '' %>">
+                        <i data-lucide="info" class="nav-icon"></i>
+                        Sobre
+                    </a>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-content">
+                    <div>
+                        <h1 class="page-title">
+                            <%= title ? title.replace(' - Reserva de Salas', '') : 'Dashboard' %>
+                        </h1>
+                        <% if (typeof subtitle !== 'undefined') { %>
+                            <p class="page-subtitle"><%= subtitle %></p>
+                        <% } %>
+                    </div>
+                    
+                    <div class="header-actions">
+                        <button class="btn btn-secondary btn-sm" id="mobile-menu-toggle" style="display: none;">
+                            <i data-lucide="menu" style="width: 16px; height: 16px;"></i>
+                        </button>
+                        
+                        <% if (currentPage === 'rooms') { %>
+                            <a href="/rooms/create" class="btn btn-primary">
+                                <i data-lucide="plus" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+                                Nova Sala
+                            </a>
+                        <% } else if (currentPage === 'reservations') { %>
+                            <a href="/reservations/create" class="btn btn-primary">
+                                <i data-lucide="plus" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+                                Nova Reserva
+                            </a>
+                        <% } else if (currentPage === 'users') { %>
+                            <a href="/users/create" class="btn btn-primary">
+                                <i data-lucide="plus" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+                                Novo Usuário
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Alertas -->
+            <% if (typeof req !== 'undefined' && req.query.success) { %>
+                <div class="container-fluid">
+                    <div class="alert alert-success">
+                        <i data-lucide="check-circle" style="width: 16px; height: 16px; margin-right: 0.5rem; display: inline;"></i>
+                        <%= req.query.success %>
+                    </div>
+                </div>
+            <% } %>
+            
+            <% if (typeof req !== 'undefined' && req.query.error) { %>
+                <div class="container-fluid">
+                    <div class="alert alert-danger">
+                        <i data-lucide="alert-circle" style="width: 16px; height: 16px; margin-right: 0.5rem; display: inline;"></i>
+                        <%= req.query.error %>
+                    </div>
+                </div>
+            <% } %>
+            
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="container-fluid">
+                    <div class="alert alert-danger">
+                        <i data-lucide="alert-circle" style="width: 16px; height: 16px; margin-right: 0.5rem; display: inline;"></i>
+                        <%= error %>
+                    </div>
+                </div>
+            <% } %>
+            
+            <!-- Conteúdo da Página -->
+            <div class="container-fluid">
+                <%- body %>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Scripts -->
+    <script>
+        // Inicializar ícones Lucide
+        lucide.createIcons();
+        
+        // Menu mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileToggle = document.getElementById('mobile-menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            // Mostrar botão mobile em telas pequenas
+            function checkScreenSize() {
+                if (window.innerWidth <= 768) {
+                    mobileToggle.style.display = 'flex';
+                } else {
+                    mobileToggle.style.display = 'none';
+                    sidebar.classList.remove('open');
+                }
+            }
+            
+            checkScreenSize();
+            window.addEventListener('resize', checkScreenSize);
+            
+            // Toggle sidebar mobile
+            mobileToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('open');
+            });
+            
+            // Fechar sidebar ao clicar fora (mobile)
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768 && 
+                    !sidebar.contains(e.target) && 
+                    !mobileToggle.contains(e.target) &&
+                    sidebar.classList.contains('open')) {
+                    sidebar.classList.remove('open');
+                }
+            });
+        });
+        
+        // Função para confirmar exclusões
+        function confirmDelete(message = 'Tem certeza que deseja excluir este item?') {
+            return confirm(message);
+        }
+        
+        // Função para mostrar loading em botões
+        function showButtonLoading(button) {
+            const originalText = button.innerHTML;
+            button.innerHTML = '<span class="loading"></span> Carregando...';
+            button.disabled = true;
+            
+            return function() {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            };
+        }
+        
+        // Auto-hide alerts
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-20px)';
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 300);
+                }, 5000);
+            });
+        });
+        
+        // Formatação de datas
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        // Aplicar formatação de datas em elementos com classe 'format-date'
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateElements = document.querySelectorAll('.format-date');
+            dateElements.forEach(element => {
+                const dateString = element.textContent || element.getAttribute('data-date');
+                if (dateString) {
+                    element.textContent = formatDate(dateString);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
+

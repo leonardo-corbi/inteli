@@ -1,0 +1,305 @@
+<div class="fade-in">
+    <!-- Header da página -->
+    <div class="d-flex justify-between items-center mb-4">
+        <div>
+            <h2 style="margin: 0; color: var(--gray-900);">Nova Reserva</h2>
+            <p style="margin: 0.5rem 0 0; color: var(--gray-600);">Crie uma nova reserva de sala</p>
+        </div>
+        <a href="/reservations" class="btn btn-secondary">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+            Voltar
+        </a>
+    </div>
+    
+    <!-- Formulário -->
+    <div class="row">
+        <div class="col-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i data-lucide="calendar-plus" style="width: 20px; height: 20px; margin-right: 0.5rem; display: inline;"></i>
+                        Dados da Reserva
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-error mb-4">
+                            <i data-lucide="alert-circle" style="width: 16px; height: 16px; display: inline; margin-right: 0.5rem;"></i>
+                            <%= error %>
+                        </div>
+                    <% } %>
+                    
+                    <form method="POST" action="/reservations" id="reservationForm">
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label for="sala_id" class="form-label">Sala *</label>
+                                <select id="sala_id" name="sala_id" class="form-control form-select" required onchange="updateRoomInfo()">
+                                    <option value="">Selecione uma sala</option>
+                                    <% rooms.forEach(room => { %>
+                                        <option 
+                                            value="<%= room.id %>" 
+                                            data-localizacao="<%= room.localizacao %>"
+                                            data-capacidade="<%= room.capacidade %>"
+                                            <%= typeof formData !== 'undefined' && formData.sala_id == room.id ? 'selected' : '' %>
+                                        >
+                                            <%= room.nome %>
+                                        </option>
+                                    <% }) %>
+                                </select>
+                                <div id="room-info" style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--gray-600);"></div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label for="usuario_id" class="form-label">Usuário *</label>
+                                <select id="usuario_id" name="usuario_id" class="form-control form-select" required>
+                                    <option value="">Selecione um usuário</option>
+                                    <% users.forEach(user => { %>
+                                        <option 
+                                            value="<%= user.id %>"
+                                            <%= typeof formData !== 'undefined' && formData.usuario_id == user.id ? 'selected' : '' %>
+                                        >
+                                            <%= user.nome %> (<%= user.email %>)
+                                        </option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label for="data_inicio" class="form-label">Data/Hora Início *</label>
+                                <input 
+                                    type="datetime-local" 
+                                    id="data_inicio" 
+                                    name="data_inicio" 
+                                    class="form-control"
+                                    value="<%= typeof formData !== 'undefined' && formData.data_inicio ? formData.data_inicio : '' %>"
+                                    required
+                                    onchange="updateMinEndDate()"
+                                >
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label for="data_fim" class="form-label">Data/Hora Fim *</label>
+                                <input 
+                                    type="datetime-local" 
+                                    id="data_fim" 
+                                    name="data_fim" 
+                                    class="form-control"
+                                    value="<%= typeof formData !== 'undefined' && formData.data_fim ? formData.data_fim : '' %>"
+                                    required
+                                >
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label for="observacoes" class="form-label">Observações</label>
+                                <textarea 
+                                    id="observacoes" 
+                                    name="observacoes" 
+                                    class="form-control" 
+                                    rows="3"
+                                    placeholder="Observações adicionais sobre a reserva (opcional)"
+                                ><%= typeof formData !== 'undefined' && formData.observacoes ? formData.observacoes : '' %></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i data-lucide="save" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+                                Criar Reserva
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="checkAvailability()">
+                                <i data-lucide="search" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+                                Verificar Disponibilidade
+                            </button>
+                            <a href="/reservations" class="btn btn-outline-secondary">
+                                <i data-lucide="x" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-4">
+            <!-- Informações de Ajuda -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i data-lucide="info" style="width: 20px; height: 20px; margin-right: 0.5rem; display: inline;"></i>
+                        Informações
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div style="font-size: 0.875rem; color: var(--gray-600); line-height: 1.5;">
+                        <h4 style="font-size: 1rem; color: var(--gray-900); margin-bottom: 0.5rem;">Dicas para Reserva:</h4>
+                        
+                        <ul style="margin: 0; padding-left: 1rem;">
+                            <li>Verifique a disponibilidade antes de confirmar</li>
+                            <li>Considere o tempo de setup/cleanup</li>
+                            <li>Confirme a capacidade da sala</li>
+                            <li>Adicione observações importantes</li>
+                        </ul>
+                        
+                        <hr style="margin: 1rem 0; border: none; border-top: 1px solid var(--gray-200);">
+                        
+                        <h4 style="font-size: 1rem; color: var(--gray-900); margin-bottom: 0.5rem;">Horários Recomendados:</h4>
+                        <div style="margin-bottom: 0.5rem;">
+                            <strong>Manhã:</strong> 08:00 - 12:00
+                        </div>
+                        <div style="margin-bottom: 0.5rem;">
+                            <strong>Tarde:</strong> 13:00 - 18:00
+                        </div>
+                        <div>
+                            <strong>Noite:</strong> 19:00 - 22:00
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Salas Disponíveis -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i data-lucide="home" style="width: 20px; height: 20px; margin-right: 0.5rem; display: inline;"></i>
+                        Salas Disponíveis
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div style="font-size: 0.875rem;">
+                        <% rooms.forEach(room => { %>
+                            <div style="display: flex; align-items: center; margin-bottom: 0.75rem; padding: 0.5rem; border: 1px solid var(--gray-200); border-radius: 6px;">
+                                <div style="width: 32px; height: 32px; background: var(--primary-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
+                                    <i data-lucide="home" style="width: 16px; height: 16px; color: white;"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 500; color: var(--gray-900);"><%= room.nome %></div>
+                                    <div style="color: var(--gray-500); font-size: 0.75rem;">
+                                        <i data-lucide="map-pin" style="width: 12px; height: 12px; margin-right: 0.25rem; display: inline;"></i>
+                                        <%= room.localizacao %>
+                                    </div>
+                                    <div style="color: var(--gray-500); font-size: 0.75rem;">
+                                        <i data-lucide="users" style="width: 12px; height: 12px; margin-right: 0.25rem; display: inline;"></i>
+                                        <%= room.capacidade %> pessoas
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Atualizar informações da sala selecionada
+    function updateRoomInfo() {
+        const select = document.getElementById('sala_id');
+        const infoDiv = document.getElementById('room-info');
+        const selectedOption = select.options[select.selectedIndex];
+        
+        if (selectedOption.value) {
+            const localizacao = selectedOption.getAttribute('data-localizacao');
+            const capacidade = selectedOption.getAttribute('data-capacidade');
+            
+            infoDiv.innerHTML = `
+                <i data-lucide="map-pin" style="width: 14px; height: 14px; margin-right: 0.25rem; display: inline;"></i>
+                ${localizacao} • 
+                <i data-lucide="users" style="width: 14px; height: 14px; margin-right: 0.25rem; display: inline;"></i>
+                ${capacidade} pessoas
+            `;
+            lucide.createIcons();
+        } else {
+            infoDiv.innerHTML = '';
+        }
+    }
+    
+    // Atualizar data mínima de fim baseada na data de início
+    function updateMinEndDate() {
+        const startDate = document.getElementById('data_inicio').value;
+        const endDateField = document.getElementById('data_fim');
+        
+        if (startDate) {
+            // Adicionar 1 hora à data de início como mínimo para data de fim
+            const start = new Date(startDate);
+            start.setHours(start.getHours() + 1);
+            
+            const minEndDate = start.toISOString().slice(0, 16);
+            endDateField.min = minEndDate;
+            
+            // Se a data de fim atual for menor que a nova mínima, atualizar
+            if (endDateField.value && endDateField.value < minEndDate) {
+                endDateField.value = minEndDate;
+            }
+        }
+    }
+    
+    // Verificar disponibilidade
+    function checkAvailability() {
+        const salaId = document.getElementById('sala_id').value;
+        const dataInicio = document.getElementById('data_inicio').value;
+        const dataFim = document.getElementById('data_fim').value;
+        
+        if (!salaId || !dataInicio || !dataFim) {
+            alert('Por favor, selecione a sala e os horários antes de verificar a disponibilidade.');
+            return;
+        }
+        
+        // Simular verificação de disponibilidade
+        const conflicts = []; // Em uma implementação real, isso viria de uma API
+        
+        if (conflicts.length > 0) {
+            alert('Atenção: Já existe uma reserva para esta sala no horário selecionado!');
+        } else {
+            alert('Sala disponível no horário selecionado!');
+        }
+    }
+    
+    // Validação do formulário
+    document.getElementById('reservationForm').addEventListener('submit', function(e) {
+        const salaId = document.getElementById('sala_id').value;
+        const usuarioId = document.getElementById('usuario_id').value;
+        const dataInicio = document.getElementById('data_inicio').value;
+        const dataFim = document.getElementById('data_fim').value;
+        
+        if (!salaId || !usuarioId || !dataInicio || !dataFim) {
+            e.preventDefault();
+            alert('Todos os campos obrigatórios devem ser preenchidos!');
+            return false;
+        }
+        
+        // Verificar se a data de fim é posterior à data de início
+        const start = new Date(dataInicio);
+        const end = new Date(dataFim);
+        
+        if (end <= start) {
+            e.preventDefault();
+            alert('A data/hora de fim deve ser posterior à data/hora de início!');
+            return false;
+        }
+        
+        // Verificar se a reserva não é no passado
+        const now = new Date();
+        if (start < now) {
+            e.preventDefault();
+            alert('Não é possível criar reservas no passado!');
+            return false;
+        }
+    });
+    
+    // Definir data/hora mínima como agora
+    document.addEventListener('DOMContentLoaded', function() {
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        const minDateTime = now.toISOString().slice(0, 16);
+        
+        document.getElementById('data_inicio').min = minDateTime;
+        document.getElementById('data_fim').min = minDateTime;
+        
+        // Atualizar informações da sala se já selecionada
+        updateRoomInfo();
+    });
+</script>
+

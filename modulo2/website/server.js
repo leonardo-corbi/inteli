@@ -1,55 +1,101 @@
-require("dotenv").config();
-const express = require("express");
-const bodyParser = require("body-parser");
-const path = require("path");
-const db = require("./config/db");
+const express = require('express');
+const path = require('path');
+const session = require('express-session');
+const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Configuração do EJS como view engine
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+// Middleware básico
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Middlewares
-app.use(express.json()); // Para parsing de JSON (APIs REST)
-app.use(bodyParser.urlencoded({ extended: true })); // Para parsing de formulários
-app.use(express.static(path.join(__dirname, "public"))); // Para arquivos estáticos
+// CORS para APIs
+app.use('/api', cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    credentials: false
+}));
 
-// Rotas da API
-const userRoutes = require("./routes/userRoutes");
-const roomRoutes = require("./routes/roomRoutes");
-const reservationRoutes = require("./routes/reservationRoutes");
-const reservationLogRoutes = require("./routes/reservationLogRoutes");
+// Configuração de sessão para rotas web
+app.use(session({
+    secret: process.env.JWT_SECRET || 'reserva-salas-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false, // true apenas em HTTPS
+        maxAge: 24 * 60 * 60 * 1000 // 24 horas
+    }
+}));
 
-app.use("/users", userRoutes);
-app.use("/rooms", roomRoutes);
-app.use("/reservations", reservationRoutes);
-app.use("/reservation-logs", reservationLogRoutes);
+// Configuração do EJS
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-// Rotas do frontend
-const frontRoutes = require("./routes/frontRoutes");
-app.use("/", frontRoutes);
+// Arquivos estáticos
+app.use(express.static(path.join(__dirname, 'views')));
 
-// Middleware para lidar com erros de rota não encontrada
+// Middleware para disponibilizar dados globais nas views
 app.use((req, res, next) => {
-  res.status(404).send("Página não encontrada");
+    res.locals.user = req.session.user || null;
+    res.locals.currentPage = req.path.split('/')[1] || 'dashboard';
+    next();
 });
 
-// Middleware para lidar com erros internos do servidor
+// Rotas da API (devem vir antes das rotas web)
+app.use('/api', require('./routes/api'));
+
+// Rotas web
+app.use('/', require('./routes/frontRoutes'));
+
+// Middleware de tratamento de erros global
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Erro no servidor");
+    console.error('Erro não tratado:', err);
+    
+    // Se for uma requisição de API
+    if (req.path.startsWith('/api')) {
+        return res.status(500).json({
+            success: false,
+            error: 'Erro interno do servidor'
+        });
+    }
+    
+    // Se for uma requisição web
+    res.status(500).render('pages/error', {
+        title: 'Erro - Reserva de Salas',
+        error: 'Erro interno do servidor',
+        message: 'Ocorreu um erro inesperado. Tente novamente.'
+    });
 });
 
-// Conexão com o banco de dados e inicialização do servidor
-db.connect()
-  .then(() => {
-    console.log("Conectado ao banco de dados PostgreSQL");
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
-      console.log(`Servidor rodando na porta ${PORT}`);
+// Rota 404 para páginas não encontradas
+app.use((req, res) => {
+    // Se for uma requisição de API
+    if (req.path.startsWith('/api')) {
+        return res.status(404).json({
+            success: false,
+            error: 'Endpoint não encontrado'
+        });
+    }
+    
+    // Se for uma requisição web
+    res.status(404).render('pages/error', {
+        title: 'Página não encontrada - Reserva de Salas',
+        error: 'Página não encontrada',
+        message: 'A página que você está procurando não existe.'
     });
-  })
-  .catch((err) => {
-    console.error("Erro ao conectar ao banco de dados:", err);
-  });
+});
+
+// Iniciar servidor
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
+    console.log(`📚 API disponível em http://localhost:${PORT}/api`);
+    console.log(`🌐 Interface web em http://localhost:${PORT}`);
+    console.log(`💾 Banco: PostgreSQL (${process.env.DB_HOST})`);
+    console.log(`🔐 JWT Secret: ${process.env.JWT_SECRET ? 'Configurado' : 'Usando padrão'}`);
+});
+
+module.exports = app;
+

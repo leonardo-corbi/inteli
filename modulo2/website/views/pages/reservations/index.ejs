@@ -1,0 +1,254 @@
+<div class="fade-in">
+    <!-- Header da página -->
+    <div class="d-flex justify-between items-center mb-4">
+        <div>
+            <h2 style="margin: 0; color: var(--gray-900);">Gerenciar Reservas</h2>
+            <p style="margin: 0.5rem 0 0; color: var(--gray-600);">Visualize e gerencie todas as reservas do sistema</p>
+        </div>
+        <a href="/reservations/create" class="btn btn-primary">
+            <i data-lucide="plus" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+            Nova Reserva
+        </a>
+    </div>
+    
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" action="/reservations" class="row">
+                <div class="col-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-control form-select">
+                        <option value="">Todos os status</option>
+                        <option value="ativa" <%= typeof req !== 'undefined' && req.query.status === 'ativa' ? 'selected' : '' %>>Ativa</option>
+                        <option value="cancelada" <%= typeof req !== 'undefined' && req.query.status === 'cancelada' ? 'selected' : '' %>>Cancelada</option>
+                        <option value="concluida" <%= typeof req !== 'undefined' && req.query.status === 'concluida' ? 'selected' : '' %>>Concluída</option>
+                    </select>
+                </div>
+                <div class="col-3">
+                    <label class="form-label">Data Início</label>
+                    <input type="date" name="data_inicio" class="form-control" value="<%= typeof req !== 'undefined' && req.query.data_inicio ? req.query.data_inicio : '' %>">
+                </div>
+                <div class="col-3">
+                    <label class="form-label">Data Fim</label>
+                    <input type="date" name="data_fim" class="form-control" value="<%= typeof req !== 'undefined' && req.query.data_fim ? req.query.data_fim : '' %>">
+                </div>
+                <div class="col-3 d-flex items-end">
+                    <button type="submit" class="btn btn-secondary" style="width: 100%;">
+                        <i data-lucide="filter" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+                        Filtrar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Lista de Reservas -->
+    <% if (reservations && reservations.length > 0) { %>
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Sala</th>
+                        <th>Usuário</th>
+                        <th>Data/Hora Início</th>
+                        <th>Data/Hora Fim</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% reservations.forEach(reservation => { %>
+                        <tr>
+                            <td>
+                                <span style="font-weight: 600; color: var(--primary-blue);">#<%= reservation.id %></span>
+                            </td>
+                            <td>
+                                <div>
+                                    <div style="font-weight: 500; color: var(--gray-900);"><%= reservation.sala_nome %></div>
+                                    <div style="font-size: 0.8rem; color: var(--gray-500);">
+                                        <i data-lucide="map-pin" style="width: 12px; height: 12px; margin-right: 0.25rem; display: inline;"></i>
+                                        <%= reservation.sala_localizacao %>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <div style="font-weight: 500; color: var(--gray-900);"><%= reservation.usuario_nome %></div>
+                                    <div style="font-size: 0.8rem; color: var(--gray-500);">
+                                        <i data-lucide="mail" style="width: 12px; height: 12px; margin-right: 0.25rem; display: inline;"></i>
+                                        <%= reservation.usuario_email %>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="font-weight: 500; color: var(--gray-900);">
+                                    <span class="format-date"><%= reservation.data_inicio %></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="font-weight: 500; color: var(--gray-900);">
+                                    <span class="format-date"><%= reservation.data_fim %></span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-<%= reservation.status === 'ativa' ? 'success' : reservation.status === 'cancelada' ? 'danger' : 'warning' %>">
+                                    <%= reservation.status %>
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a href="/reservations/<%= reservation.id %>" class="btn btn-secondary btn-sm" title="Ver detalhes">
+                                        <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
+                                    </a>
+                                    <% if (reservation.status === 'ativa') { %>
+                                        <a href="/reservations/<%= reservation.id %>/edit" class="btn btn-primary btn-sm" title="Editar">
+                                            <i data-lucide="edit" style="width: 14px; height: 14px;"></i>
+                                        </a>
+                                        <form method="POST" action="/reservations/<%= reservation.id %>/cancel" style="display: inline;" onsubmit="return confirmDelete('Tem certeza que deseja cancelar esta reserva?')">
+                                            <input type="hidden" name="alterado_por_id" value="1">
+                                            <button type="submit" class="btn btn-warning btn-sm" title="Cancelar">
+                                                <i data-lucide="x-circle" style="width: 14px; height: 14px;"></i>
+                                            </button>
+                                        </form>
+                                    <% } %>
+                                    <form method="POST" action="/reservations/<%= reservation.id %>/delete" style="display: inline;" onsubmit="return confirmDelete('Tem certeza que deseja excluir esta reserva?')">
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Excluir">
+                                            <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Estatísticas -->
+        <div class="row mt-4">
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div style="color: var(--primary-blue); font-size: 1.5rem; font-weight: 700;">
+                            <%= reservations.length %>
+                        </div>
+                        <div style="color: var(--gray-600); font-size: 0.875rem;">Total de Reservas</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div style="color: var(--success); font-size: 1.5rem; font-weight: 700;">
+                            <%= reservations.filter(r => r.status === 'ativa').length %>
+                        </div>
+                        <div style="color: var(--gray-600); font-size: 0.875rem;">Reservas Ativas</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div style="color: var(--warning); font-size: 1.5rem; font-weight: 700;">
+                            <%= reservations.filter(r => r.status === 'cancelada').length %>
+                        </div>
+                        <div style="color: var(--gray-600); font-size: 0.875rem;">Canceladas</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div style="color: var(--info); font-size: 1.5rem; font-weight: 700;">
+                            <%= [...new Set(reservations.map(r => r.sala_nome))].length %>
+                        </div>
+                        <div style="color: var(--gray-600); font-size: 0.875rem;">Salas Utilizadas</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    <% } else { %>
+        <div class="card">
+            <div class="card-body">
+                <div class="empty-state">
+                    <i data-lucide="calendar" class="empty-state-icon"></i>
+                    <h3>Nenhuma reserva encontrada</h3>
+                    <p>Não há reservas cadastradas no sistema ou nenhuma reserva corresponde aos filtros aplicados.</p>
+                    <a href="/reservations/create" class="btn btn-primary">
+                        <i data-lucide="plus" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+                        Criar Primeira Reserva
+                    </a>
+                </div>
+            </div>
+        </div>
+    <% } %>
+    
+    <!-- Ações Rápidas -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i data-lucide="zap" style="width: 20px; height: 20px; margin-right: 0.5rem; display: inline;"></i>
+                Ações Rápidas
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-3">
+                    <a href="/reservations/create" class="btn btn-primary" style="width: 100%; height: 60px; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="plus-circle" style="width: 20px; height: 20px; margin-right: 0.5rem;"></i>
+                        Nova Reserva
+                    </a>
+                </div>
+                <div class="col-3">
+                    <a href="/reservations/calendar" class="btn btn-secondary" style="width: 100%; height: 60px; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="calendar-days" style="width: 20px; height: 20px; margin-right: 0.5rem;"></i>
+                        Ver Calendário
+                    </a>
+                </div>
+                <div class="col-3">
+                    <a href="/rooms/availability" class="btn btn-secondary" style="width: 100%; height: 60px; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="search" style="width: 20px; height: 20px; margin-right: 0.5rem;"></i>
+                        Verificar Disponibilidade
+                    </a>
+                </div>
+                <div class="col-3">
+                    <a href="/logs" class="btn btn-secondary" style="width: 100%; height: 60px; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="file-text" style="width: 20px; height: 20px; margin-right: 0.5rem;"></i>
+                        Ver Logs
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Atualização automática de status
+    function updateReservationStatus() {
+        const now = new Date();
+        const rows = document.querySelectorAll('tbody tr');
+        
+        rows.forEach(row => {
+            const startDateElement = row.querySelector('.format-date');
+            if (startDateElement) {
+                const startDate = new Date(startDateElement.getAttribute('data-date') || startDateElement.textContent);
+                const statusBadge = row.querySelector('.badge');
+                
+                if (statusBadge && statusBadge.textContent.trim() === 'ativa' && startDate < now) {
+                    // Reserva passou do horário - poderia marcar como concluída
+                    // statusBadge.className = 'badge badge-warning';
+                    // statusBadge.textContent = 'concluída';
+                }
+            }
+        });
+    }
+    
+    // Executar ao carregar a página
+    document.addEventListener('DOMContentLoaded', updateReservationStatus);
+    
+    // Atualizar a cada minuto
+    setInterval(updateReservationStatus, 60000);
+</script>
+

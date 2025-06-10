@@ -1,0 +1,291 @@
+<div class="fade-in">
+    <!-- Estatísticas Principais -->
+    <div class="row mb-4">
+        <div class="col-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div style="background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue)); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                        <i data-lucide="building" style="width: 24px; height: 24px; color: white;"></i>
+                    </div>
+                    <h3 style="font-size: 2rem; font-weight: 700; color: var(--primary-blue); margin-bottom: 0.5rem;"><%= stats.totalRooms %></h3>
+                    <p style="color: var(--gray-600); margin: 0;">Salas Cadastradas</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div style="background: linear-gradient(135deg, var(--success), #10b981); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                        <i data-lucide="calendar-check" style="width: 24px; height: 24px; color: white;"></i>
+                    </div>
+                    <h3 style="font-size: 2rem; font-weight: 700; color: var(--success); margin-bottom: 0.5rem;"><%= stats.activeReservations %></h3>
+                    <p style="color: var(--gray-600); margin: 0;">Reservas Ativas</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div style="background: linear-gradient(135deg, var(--warning), #f59e0b); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                        <i data-lucide="users" style="width: 24px; height: 24px; color: white;"></i>
+                    </div>
+                    <h3 style="font-size: 2rem; font-weight: 700; color: var(--warning); margin-bottom: 0.5rem;"><%= stats.totalUsers %></h3>
+                    <p style="color: var(--gray-600); margin: 0;">Usuários</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div style="background: linear-gradient(135deg, var(--info), var(--accent-blue)); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                        <i data-lucide="calendar" style="width: 24px; height: 24px; color: white;"></i>
+                    </div>
+                    <h3 style="font-size: 2rem; font-weight: 700; color: var(--info); margin-bottom: 0.5rem;"><%= stats.totalReservations %></h3>
+                    <p style="color: var(--gray-600); margin: 0;">Total de Reservas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Conteúdo Principal -->
+    <div class="row">
+        <!-- Reservas de Hoje -->
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i data-lucide="calendar-days" style="width: 20px; height: 20px; margin-right: 0.5rem; display: inline;"></i>
+                        Reservas de Hoje
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <% if (todayReservations && todayReservations.length > 0) { %>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            <% todayReservations.forEach(reservation => { %>
+                                <div style="padding: 1rem; border: 1px solid var(--gray-200); border-radius: var(--border-radius); margin-bottom: 0.75rem; background: var(--very-light-blue);">
+                                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                                        <h4 style="font-weight: 600; color: var(--primary-blue); margin: 0;"><%= reservation.sala_nome %></h4>
+                                        <span class="badge badge-<%= reservation.status === 'ativa' ? 'success' : reservation.status === 'cancelada' ? 'danger' : 'warning' %>">
+                                            <%= reservation.status %>
+                                        </span>
+                                    </div>
+                                    <p style="color: var(--gray-600); margin: 0.25rem 0; font-size: 0.875rem;">
+                                        <i data-lucide="user" style="width: 14px; height: 14px; margin-right: 0.25rem; display: inline;"></i>
+                                        <%= reservation.usuario_nome %>
+                                    </p>
+                                    <p style="color: var(--gray-600); margin: 0.25rem 0; font-size: 0.875rem;">
+                                        <i data-lucide="clock" style="width: 14px; height: 14px; margin-right: 0.25rem; display: inline;"></i>
+                                        <span class="format-date"><%= reservation.data_inicio %></span> - 
+                                        <span class="format-date"><%= reservation.data_fim %></span>
+                                    </p>
+                                    <p style="color: var(--gray-600); margin: 0; font-size: 0.875rem;">
+                                        <i data-lucide="map-pin" style="width: 14px; height: 14px; margin-right: 0.25rem; display: inline;"></i>
+                                        <%= reservation.sala_localizacao %>
+                                    </p>
+                                </div>
+                            <% }) %>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="/reservations" class="btn btn-secondary btn-sm">Ver Todas as Reservas</a>
+                        </div>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <i data-lucide="calendar-x" class="empty-state-icon"></i>
+                            <h3>Nenhuma reserva hoje</h3>
+                            <p>Não há reservas agendadas para hoje.</p>
+                            <a href="/reservations/create" class="btn btn-primary">Criar Nova Reserva</a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Próximas Reservas -->
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i data-lucide="clock" style="width: 20px; height: 20px; margin-right: 0.5rem; display: inline;"></i>
+                        Próximas Reservas
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <% if (upcomingReservations && upcomingReservations.length > 0) { %>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            <% upcomingReservations.slice(0, 8).forEach(reservation => { %>
+                                <div style="padding: 0.75rem; border-left: 4px solid var(--primary-blue); background: var(--gray-50); margin-bottom: 0.75rem; border-radius: 0 var(--border-radius) var(--border-radius) 0;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                                        <h5 style="font-weight: 600; color: var(--gray-900); margin: 0; font-size: 0.875rem;"><%= reservation.sala_nome %></h5>
+                                        <span style="font-size: 0.75rem; color: var(--gray-500);">
+                                            <span class="format-date"><%= reservation.data_inicio %></span>
+                                        </span>
+                                    </div>
+                                    <p style="color: var(--gray-600); margin: 0; font-size: 0.8rem;">
+                                        <%= reservation.usuario_nome %>
+                                    </p>
+                                </div>
+                            <% }) %>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="/reservations/calendar" class="btn btn-secondary btn-sm">Ver Calendário</a>
+                        </div>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <i data-lucide="calendar-plus" class="empty-state-icon"></i>
+                            <h3>Nenhuma reserva próxima</h3>
+                            <p>Não há reservas agendadas para os próximos dias.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Segunda linha -->
+    <div class="row mt-4">
+        <!-- Salas Mais Utilizadas -->
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i data-lucide="trending-up" style="width: 20px; height: 20px; margin-right: 0.5rem; display: inline;"></i>
+                        Salas Mais Utilizadas (30 dias)
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <% if (mostUsedRooms && mostUsedRooms.length > 0) { %>
+                        <% mostUsedRooms.forEach((room, index) => { %>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--gray-200);">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem; color: white; font-weight: 600; font-size: 0.875rem;">
+                                        <%= index + 1 %>
+                                    </div>
+                                    <span style="font-weight: 500; color: var(--gray-900);"><%= room.nome %></span>
+                                </div>
+                                <div style="display: flex; align-items: center;">
+                                    <span style="background: var(--light-blue); color: var(--primary-blue); padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">
+                                        <%= room.count %> reservas
+                                    </span>
+                                </div>
+                            </div>
+                        <% }) %>
+                        <div class="text-center mt-3">
+                            <a href="/rooms" class="btn btn-secondary btn-sm">Ver Todas as Salas</a>
+                        </div>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <i data-lucide="bar-chart-3" class="empty-state-icon"></i>
+                            <h3>Sem dados suficientes</h3>
+                            <p>Não há dados de utilização para exibir.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Atividades Recentes -->
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i data-lucide="activity" style="width: 20px; height: 20px; margin-right: 0.5rem; display: inline;"></i>
+                        Atividades Recentes
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <% if (recentLogs && recentLogs.length > 0) { %>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            <% recentLogs.slice(0, 8).forEach(log => { %>
+                                <div style="display: flex; align-items: start; padding: 0.75rem 0; border-bottom: 1px solid var(--gray-200);">
+                                    <div style="width: 8px; height: 8px; background: var(--primary-blue); border-radius: 50%; margin-top: 0.5rem; margin-right: 0.75rem; flex-shrink: 0;"></div>
+                                    <div style="flex: 1;">
+                                        <p style="margin: 0; font-size: 0.875rem; color: var(--gray-900);">
+                                            <strong><%= log.alterado_por_nome %></strong> <%= log.descricao %>
+                                        </p>
+                                        <p style="margin: 0; font-size: 0.75rem; color: var(--gray-500);">
+                                            <span class="format-date"><%= log.data_alteracao %></span>
+                                            <% if (log.sala_nome) { %>
+                                                • <%= log.sala_nome %>
+                                            <% } %>
+                                        </p>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="/logs" class="btn btn-secondary btn-sm">Ver Todos os Logs</a>
+                        </div>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <i data-lucide="file-text" class="empty-state-icon"></i>
+                            <h3>Nenhuma atividade</h3>
+                            <p>Não há atividades recentes para exibir.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Ações Rápidas -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i data-lucide="zap" style="width: 20px; height: 20px; margin-right: 0.5rem; display: inline;"></i>
+                        Ações Rápidas
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                            <a href="/reservations/create" class="btn btn-primary" style="width: 100%; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                <i data-lucide="plus-circle" style="width: 24px; height: 24px; margin-bottom: 0.5rem;"></i>
+                                Nova Reserva
+                            </a>
+                        </div>
+                        <div class="col-3">
+                            <a href="/rooms/availability" class="btn btn-secondary" style="width: 100%; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                <i data-lucide="search" style="width: 24px; height: 24px; margin-bottom: 0.5rem;"></i>
+                                Verificar Disponibilidade
+                            </a>
+                        </div>
+                        <div class="col-3">
+                            <a href="/rooms/create" class="btn btn-secondary" style="width: 100%; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                <i data-lucide="building" style="width: 24px; height: 24px; margin-bottom: 0.5rem;"></i>
+                                Cadastrar Sala
+                            </a>
+                        </div>
+                        <div class="col-3">
+                            <a href="/users/create" class="btn btn-secondary" style="width: 100%; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                <i data-lucide="user-plus" style="width: 24px; height: 24px; margin-bottom: 0.5rem;"></i>
+                                Novo Usuário
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Atualizar estatísticas em tempo real (opcional)
+    function updateStats() {
+        fetch('/api/stats')
+            .then(response => response.json())
+            .then(data => {
+                // Atualizar números se necessário
+                console.log('Stats atualizadas:', data);
+            })
+            .catch(error => console.error('Erro ao atualizar stats:', error));
+    }
+    
+    // Atualizar a cada 5 minutos
+    setInterval(updateStats, 300000);
+</script>
+
