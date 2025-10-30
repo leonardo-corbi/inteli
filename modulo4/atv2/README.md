@@ -2,9 +2,9 @@
 
 ## Vídeo Demonstrativo
 
-[Clique aqui para assistir ao vídeo demonstrativo](./assets/video_demonstracao.mp4)
+[Clique aqui para assistir ao vídeo demonstrativo](https://www.youtube.com/watch?v=0m2REz79Gig)
 
-Ou acesse diretamente o arquivo em: `assets/video_demonstracao.mp4`
+Ou acesse diretamente: https://www.youtube.com/watch?v=0m2REz79Gig
 
 ## Código Arduino
 
